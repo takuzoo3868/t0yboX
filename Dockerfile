@@ -25,10 +25,6 @@ RUN apt install -y python-dev libffi-dev python-pip \
     && apt-get clean \
     && pip install angr
 
-# pin
-RUN wget http://software.intel.com/sites/landingpage/pintool/downloads/pin-3.0-76991-gcc-linux.tar.gz \
-    && tar xvf pin-3.0-76991-gcc-linux.tar.gz
-
 # qira
 RUN apt-get install -y sudo \
     && apt-get clean \
