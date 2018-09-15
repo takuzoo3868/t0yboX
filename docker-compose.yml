@@ -2,7 +2,7 @@ version: '3'
 
 services:
   t0yboX:
-    image: takuzoo3868/t0yboX
+    image: takuzoo3868/t0ybox
     build: "."
     volumes:
       - ./volume:/root
