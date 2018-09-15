@@ -3,8 +3,12 @@ Docker image including ctf tools!!!
 
 ## Install
 
-TBA
+```bash
+$ python -c "`curl -fsSL https://raw.githubusercontent.com/takuzoo3868/t0yboX/master/install.py `"
+```
 
 ## Usage
 
-TBA
+```bash
+$ t0yboX
+```
