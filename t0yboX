@@ -32,6 +32,7 @@ def main():
     parser.add_argument("-c", "--copy", dest="target_copy", help="Specify copy filename.")
     parser.add_argument("-m", "--move", dest="target_move", help="Specify move filename.")
     parser.add_argument("-B", "--build", dest="build", help="Build docker image.")
+    parser.add_argument("-P", "--pull", dest="pull", help="Pull docker image from DockerHub.")
     parser.add_argument("-R", "--remove", dest="remove", help="Remove docker container.")
 
     options = parser.parse_args()
@@ -49,12 +50,15 @@ def main():
     if options.build:
         os.system('sudo docker build -t takuzoo3868/t0ybox -f Dockerfile .')
         print("[+] Done. Please run docker!!! --> ./t0yboX")
+    elif options.pull:
+        print("[*] Pull t0yboX image from DockerHub...")
+        os.system('sudo docker pull takuzoo3868/t0ybox')
     elif options.remove:
         print("[-] Removing docker container...")
         os.system('sudo docker rm -f CTF_TOY_BOX')
         print("[*] Done.")
     else:
-        os.system('sudo docker run -itd --name CTF_TOY_BOX -p 3002:3002 -v ./volume:/root --privileged  --net=host --security-opt seccomp:unconfined takuzoo3868/t0ybox')
+        os.system('sudo docker run -it --name CTF_TOY_BOX -p 3002:3002 -v ./volume:/root --privileged  --net=host --security-opt seccomp:unconfined takuzoo3868/t0ybox')
 
 
 if __name__ == "__main__":
