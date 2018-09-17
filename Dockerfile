@@ -14,11 +14,13 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 WORKDIR /root
 
 # apt-get install
-RUN dpkg --add-architecture i386 && apt-get update && apt-get -y upgrade \
-    && apt-get install -y build-essential \
-    && apt-get install -y gcc-multilib g++-multilib coreutils binutils-multiarch gdb git vim python python3 python-pip python3-pip \
+RUN add-apt-repository ppa:apt-fast/stable && apt-get update && apt-get -y install apt-fast
+
+RUN dpkg --add-architecture i386 && apt-fast update \
+    && apt-fast install -y build-essential \
+    && apt-fast install -y gcc-multilib g++-multilib coreutils binutils-multiarch gdb git vim python python3 python-pip python3-pip \
     socat netcat nmap tcpdump curl wget llvm php-cli nasm qemu radare2 ltrace strace foremost volatility binwalk zip screenfetch \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && apt-fast clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # pip install
 RUN pip install hashid scapy pwn && \
@@ -31,7 +33,7 @@ RUN wget https://github.com/0vercl0k/rp/releases/download/v1/rp-lin-x64 \
     && mv rp-lin-x64 rp-lin-x86 /usr/local/bin
 
 # peda
-RUN apt-get install -y nasm \
+RUN apt-fast install -y nasm \
     && git clone https://github.com/longld/peda.git ~/.peda \
     && echo "source ~/.peda/peda.py" >> ~/.gdbinit \
     && echo "DONE! debug your program with gdb and enjoy"
@@ -42,18 +44,20 @@ RUN git clone https://github.com/scwuaptx/Pwngdb.git ~/.pwngdb \
     && echo "sorce ~/.pwngdb/ngelheap/gdbinit.py" >> ~/.gdbinit 
 
 # angr, z3py
-RUN apt-get install -y python-dev libffi-dev python-pip \
+RUN apt-fast install -y python-dev libffi-dev python-pip \
     && apt-get clean \
     && pip install angr
 
 # qira
-RUN git clone git clone https://github.com/geohot/qira.git ~/.qira \
+RUN git clone https://github.com/geohot/qira.git ~/.qira \
     && cd ~/.qira \
-    && ./install.sh
+    && ./install.sh \
+    && ./fetchlibs.sh \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # afl
-RUN apt-get install -y libtool-bin \
-    && apt-get clean \
+RUN apt-fast install -y libtool-bin \
+    && apt-fast clean \
     && wget http://lcamtuf.coredump.cx/afl/releases/afl-latest.tgz \
     && tar xvf afl-latest.tgz \
     && cd afl-* && make \
