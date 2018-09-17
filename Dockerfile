@@ -22,6 +22,7 @@ RUN add-apt-repository ppa:apt-fast/stable \
     && apt-fast install -y \
     binutils-multiarch \
     binwalk \
+    boost159 \
     cmake \
     coreutils \
     ctags \
