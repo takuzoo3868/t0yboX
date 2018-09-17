@@ -47,9 +47,9 @@ RUN apt-get install -y python-dev libffi-dev python-pip \
     && pip install angr
 
 # qira
-RUN apt-get install -y sudo \
-    && apt-get clean \
-    && wget -qO- https://github.com/BinaryAnalysisPlatform/qira/archive/v1.2.tar.gz | tar zx && cd qira-1.2 && ./install.sh
+RUN git clone git clone https://github.com/geohot/qira.git ~/.qira \
+    && cd ~/.qira \
+    && ./install.sh
 
 # afl
 RUN apt-get install -y libtool-bin \
