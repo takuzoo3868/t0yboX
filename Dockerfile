@@ -1,9 +1,24 @@
-FROM ubuntu:16.04
+FROM phusion/baseimage:latest
+LABEL maintainer="tăküz00"
+
+ARG BUILD_DATE
+ARG VCS_REF
+LABEL org.label-schema.build-date=$BUILD_DATE \
+    org.label-schema.docker.dockerfile="/Dockerfile" \
+    org.label-schema.license="MIT" \
+    org.label-schema.name="takuzoo3868/t0yboX" \
+    org.label-schema.vcs-ref=$VCS_REF \
+    org.label-schema.vcs-type="Git" \
+    org.label-schema.vcs-url="https://github.com/takuzoo3868/t0yboX"
+
+WORKDIR /root
 
 # apt-get install
-RUN apt update && apt -y upgrade && apt install -y \
-    build-essential gcc-multilib g++-multilib coreutils binutils-multiarch gdb git vim python python3 python-pip python3-pip ipython ipython3 \
-    socat netcat nmap tcpdump curl wget llvm php-cli nasm qemu radare2 ltrace strace foremost volatility binwalk zip screenfetch
+RUN dpkg --add-architecture i386 && apt-get update && apt-get -y upgrade \
+    && apt-get install -y build-essential \
+    && apt-get install -y gcc-multilib g++-multilib coreutils binutils-multiarch gdb git vim python python3 python-pip python3-pip \
+    socat netcat nmap tcpdump curl wget llvm php-cli nasm qemu radare2 ltrace strace foremost volatility binwalk zip screenfetch \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # pip install
 RUN pip install hashid scapy pwn && \
@@ -16,12 +31,18 @@ RUN wget https://github.com/0vercl0k/rp/releases/download/v1/rp-lin-x64 \
     && mv rp-lin-x64 rp-lin-x86 /usr/local/bin
 
 # peda
-RUN apt install -y nasm \
-    && git clone https://github.com/longld/peda.git ~/peda \
-    && echo "source ~/peda/peda.py" >> ~/.gdbinit
+RUN apt-get install -y nasm \
+    && git clone https://github.com/longld/peda.git ~/.peda \
+    && echo "source ~/.peda/peda.py" >> ~/.gdbinit \
+    && echo "DONE! debug your program with gdb and enjoy"
+
+# pwngdb
+RUN git clone https://github.com/scwuaptx/Pwngdb.git ~/.pwngdb \
+    && echo "sorce ~/.pwngdb/pwngdb.py" >> ~/.gdbinit \
+    && echo "sorce ~/.pwngdb/ngelheap/gdbinit.py" >> ~/.gdbinit 
 
 # angr, z3py
-RUN apt install -y python-dev libffi-dev python-pip \
+RUN apt-get install -y python-dev libffi-dev python-pip \
     && apt-get clean \
     && pip install angr
 
@@ -38,5 +59,18 @@ RUN apt-get install -y libtool-bin \
     && cd afl-* && make \
     && cd qemu_mode && ./build_qemu_support.sh
 
-# Hello t0yboX!!!
-CMD ["screenfetch"]
+# dotfiles
+RUN touch ~/.bash_history \
+    && git clone https://github.com/takuzoo3868/dotfiles.git ~/.dotfiles \
+    && cd ~/.dotfiles \
+    && chmod +x setup_link.sh && ./setup_link.sh
+
+# init startup script
+RUN mkdir -p /etc/my_init.d
+COPY bin/banner.py /etc/my_init.d/banner.py
+RUN chmod +x /etc/my_init.d/banner.py
+
+# qira port
+EXPOSE 80 3002 3003 4000
+
+CMD ["/bin/bash"]

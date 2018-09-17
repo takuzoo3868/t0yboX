@@ -1,8 +1,10 @@
 #!/usr/bin/python
 
 import sys, os
+import time
+import datetime
 import subprocess
-
+import argparse
 
 # set variable
 VOLUME = 'volume'
@@ -10,18 +12,50 @@ FOLDER = '.t0yboX'
 TOYBOX = 't0yboX'
 TOYBOX_PATH = os.path.expanduser('~') + '/' + FOLDER
 
-if len(sys.argv) > 1:
-    # copy or move file
-    if sys.argv[1]  == '-m' and len(sys.argv) > 2:
-        file_index = 2
-        cmd = 'sudo mv {0} {1}/{2}'
-    else:
-        file_index = 1
-        cmd = 'sudo cp -r {0} {1}/{2}'
 
-    cmd = cmd.format(sys.argv[file_index], TOYBOX_PATH, VOLUME)
+def copy_file(filename):
+    cmd = "sudo cp -r {0} {1}/{2}"
+    cmd = cmd.format(filename, TOYBOX_PATH, VOLUME)
     os.system(cmd)
 
-# RUN CTF DOCKER TOOL!!! 
-os.chdir(TOYBOX_PATH)
-os.system('sudo docker-compose run t0yboX bash')
+
+def move_file(filename):
+    cmd = "sudo mv {0} {1}/{2}"
+    cmd = cmd.format(filename, TOYBOX_PATH, VOLUME)
+    os.system(cmd)
+
+
+def main():
+    parser = argparse.ArgumentParser(usage="%(prog)s", description="Run a docker container.",
+                                     epilog="end", add_help=True)
+    
+    parser.add_argument("-c", "--copy", dest="target_copy", help="Specify copy filename.")
+    parser.add_argument("-m", "--move", dest="target_move", help="Specify move filename.")
+    parser.add_argument("-B", "--build", dest="build", help="Build docker image.")
+    parser.add_argument("-R", "--remove", dest="remove", help="Remove docker container.")
+
+    options = parser.parse_args()
+
+    if options.target_copy:
+        copy_file(filename=options.target_copy)
+        print("[+] Done copy {}.".format(options.target_copy))
+    elif options.target_move:
+        move_file(filename=options.target_move)
+        print("[+] Done move {}.".format(options.target_move))
+    else:
+        print("[*] Don't add any files to t0yboX...")
+
+    os.chdir(TOYBOX_PATH)
+    if options.build:
+        os.system('sudo docker build -t takuzoo3868/t0ybox -f Dockerfile .')
+        print("[+] Done. Please run docker!!! --> ./t0yboX")
+    elif options.remove:
+        print("[-] Removing docker container...")
+        os.system('sudo docker rm -f CTF_TOY_BOX')
+        print("[*] Done.")
+    else:
+        os.system('sudo docker run -itd --name CTF_TOY_BOX -p 3002:3002 -v ./volume:/root --privileged  --net=host --security-opt seccomp:unconfined takuzoo3868/t0ybox')
+
+
+if __name__ == "__main__":
+    main()

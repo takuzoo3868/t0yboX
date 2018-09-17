@@ -31,17 +31,5 @@ else:
     sys.stderr.write('shell not supported => {}'.format(shell))
     exit()
 
-# remove alias(command)
-f = open(shellrc_path, 'r')
-body = f.read()
-f.close()
-
-alias = '\nalias t0yboX=\'{0}\''.format(TOYBOX_PATH)
-body = body.replace(alias, '')
-
-f = open(shellrc_path, 'w')
-f.write(body)
-f.close()
-
 # restart shell
 os.system(shell)
