@@ -12,12 +12,15 @@ TOYBOX_PATH = TOYBOX_DIRECTORY_PATH + '/' + TOYBOX
 
 # clone ctf-TOYBOX
 os.chdir(HOME)
-cmd = 'git clone https://github.com/takuzoo3868/t0yboX/ {}'.format(FOLDER)
-os.system(cmd)
-
-# make volume folder
-cmd = 'mkdir {0}/{1}'.format(TOYBOX_DIRECTORY_PATH, VOLUME)
-os.system(cmd)
+if os.path.exists(TOYBOX_DIRECTORY_PATH):
+    print("[OK] {} is exit.".format(FOLDER))
+else:
+    print("[*] cloning dockerfiles...")
+    cmd = 'git clone https://github.com/takuzoo3868/t0yboX/ {}'.format(FOLDER)
+    os.system(cmd)
+    # make volume folder
+    cmd = 'mkdir {0}/{1}'.format(TOYBOX_DIRECTORY_PATH, VOLUME)
+    os.system(cmd)
 
 # get shell's rc file name
 shell = os.environ['SHELL']
@@ -28,14 +31,13 @@ else:
     exit()
 
 # set permission
+print("[*] setting permission...")
 cmd = 'sudo chmod +x {0}'.format(TOYBOX_PATH)
 os.system(cmd)
 
-# set alias(command)
-f = open(shellrc_path, 'a')
-alias = '\nalias t0yboX=\'{0}\''.format(TOYBOX_PATH)
-f.write(alias)
-f.close()
+# notice on terminal
+print("\nYou may need set alias in {}:".format(shellrc_path))
+print("   alias {0} = {1}\n".format(TOYBOX, TOYBOX_PATH))
 
-# restart shell
-os.system(shell)
+# done!!!
+print("[OK] t0yboX install done!!! Hi pro.")
