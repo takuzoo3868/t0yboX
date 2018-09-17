@@ -49,12 +49,12 @@ RUN apt-fast install -y python-dev libffi-dev python-pip \
     && pip install angr
 
 # qira
-RUN apt-get install -y sudo
-RUN git clone https://github.com/geohot/qira.git ~/.qira \
-    && cd ~/.qira \
-    && ./install.sh \
-    && ./fetchlibs.sh \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+#RUN apt-get install -y sudo
+#RUN git clone https://github.com/geohot/qira.git ~/.qira \
+#    && cd ~/.qira \
+#    && ./install.sh \
+#    && ./fetchlibs.sh \
+#    && apt-fast clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # afl
 RUN apt-fast install -y libtool-bin \
@@ -74,8 +74,5 @@ RUN touch ~/.bash_history \
 RUN mkdir -p /etc/my_init.d
 COPY bin/banner.py /etc/my_init.d/banner.py
 RUN chmod +x /etc/my_init.d/banner.py
-
-# qira port
-EXPOSE 80 3002 3003 4000
 
 CMD ["/bin/bash"]
