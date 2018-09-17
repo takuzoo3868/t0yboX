@@ -49,8 +49,8 @@ RUN apt-fast install -y python-dev libffi-dev python-pip \
     && pip install angr
 
 # qira
-RUN apt-fast install -y sudo \
-    && git clone https://github.com/geohot/qira.git ~/.qira \
+RUN apt-get install -y sudo
+RUN git clone https://github.com/geohot/qira.git ~/.qira \
     && cd ~/.qira \
     && ./install.sh \
     && ./fetchlibs.sh \
