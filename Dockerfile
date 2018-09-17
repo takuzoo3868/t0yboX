@@ -34,7 +34,6 @@ RUN add-apt-repository ppa:apt-fast/stable \
     libc6-i386 \
     libc6-dev-i386 \
     libssl-dev \
-    libssl-dev:i386 \
     libgmp-dev \
     libevent-dev \
     libffi-dev \
