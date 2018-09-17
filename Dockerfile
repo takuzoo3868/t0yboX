@@ -22,7 +22,9 @@ RUN add-apt-repository ppa:apt-fast/stable \
     && apt-fast install -y \
     binutils-multiarch \
     binwalk \
+    cmake \
     coreutils \
+    ctags \
     curl \
     foremost \
     g++-multilib \
@@ -53,7 +55,7 @@ RUN add-apt-repository ppa:apt-fast/stable \
     python2.7-dev \
     python3-dev \
     python3-pip \
-    p7zip \
+    p7zip-full \
     qemu \
     radare2 \
     socat \
