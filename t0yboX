@@ -31,9 +31,9 @@ def main():
     
     parser.add_argument("-c", "--copy", dest="target_copy", help="Specify copy filename.")
     parser.add_argument("-m", "--move", dest="target_move", help="Specify move filename.")
-    parser.add_argument("-B", "--build", dest="build", help="Build docker image.")
-    parser.add_argument("-P", "--pull", dest="pull", help="Pull docker image from DockerHub.")
-    parser.add_argument("-R", "--remove", dest="remove", help="Remove docker container.")
+    parser.add_argument("-B", "--build", dest="build", action="store_true", help="Build docker image.")
+    parser.add_argument("-P", "--pull", dest="pull", action="store_true", help="Pull docker image from DockerHub.")
+    parser.add_argument("-R", "--remove", dest="remove", action="store_true", help="Remove docker container.")
 
     options = parser.parse_args()
 
