@@ -13,56 +13,145 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 
 WORKDIR /root
 
-# apt-get install
-RUN add-apt-repository ppa:apt-fast/stable && apt-get update && apt-get -y install apt-fast
-
-RUN dpkg --add-architecture i386 && apt-fast update \
+# apt install
+RUN add-apt-repository ppa:apt-fast/stable \
+    && apt-get update \
+    && apt-get -y install apt-fast \
+    && dpkg --add-architecture i386 \
     && apt-fast install -y build-essential \
-    && apt-fast install -y gcc-multilib g++-multilib coreutils binutils-multiarch gdb git vim python python3 python-pip python3-pip \
-    socat netcat nmap tcpdump curl wget llvm php-cli nasm qemu radare2 ltrace strace foremost volatility binwalk zip screenfetch \
-    && apt-fast clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && apt-fast install -y \
+    binutils-multiarch \
+    binwalk \
+    coreutils \
+    curl \
+    foremost \
+    g++-multilib \
+    gcc-multilib \
+    gdb \
+    git \
+    graphviz-dev \
+    hydra \
+    libc6-i386 \
+    libc6-dev-i386 \
+    libssl-dev \
+    libssl-dev:i386 \
+    libgmp-dev \
+    libevent-dev \
+    libffi-dev \
+    libpcap-dev \
+    libpcre++-dev \
+    libtool-bin \
+    llvm \
+    ltrace \
+    nasm \
+    netcat \
+    nmap \
+    ncurses-dev \
+    pcregrep \
+    php-cli \
+    python-pip \
+    python2.7 \
+    python2.7-dev \
+    python3-dev \
+    python3-pip \
+    p7zip \
+    qemu \
+    radare2 \
+    socat \
+    strace \
+    sudo \
+    tcpdump \
+    vim \
+    volatility \
+    wget \
+    zip \
+    && apt-fast clean \
 
 # pip install
-RUN pip install hashid scapy pwn && \
-    pip3 install hashid scapy 
+    && pip install \
+    angr \
+    distorm3 \
+    gmpy \
+    hashid \
+    pwn \
+    scapy \
+    yara-python \
+    && pip3 install \
+    hashid \
+    pycparser \
+    scapy \ 
+    && rm -rf /tmp/* \
+
+# non package tools install
+    && mkdir -p ~/tools \
 
 # rp ++
-RUN wget https://github.com/0vercl0k/rp/releases/download/v1/rp-lin-x64 \
-    && wget https://github.com/0vercl0k/rp/releases/download/v1/rp-lin-x86 \
-    && chmod +x rp-lin-x64 rp-lin-x86 \
-    && mv rp-lin-x64 rp-lin-x86 /usr/local/bin
+    && cd ~/tools \
+    && git clone https://github.com/0vercl0k/rp.git \
+    && cd rp \
+    && git checkout next \
+    && git submodule update --init --recursive \
+    && sed -i 's/find_package(Boost 1.59.0 COMPONENTS flyweight)/find_package(Boost)/g' CMakeLists.txt \
+    && mkdir build \
+    && cd build \
+    && cmake ../ \
+    && make \
+    && cp ../bin/rp-lin-x64 /usr/local/bin/ \
 
 # peda
-RUN apt-fast install -y nasm \
-    && git clone https://github.com/longld/peda.git ~/.peda \
-    && echo "source ~/.peda/peda.py" >> ~/.gdbinit \
-    && echo "DONE! debug your program with gdb and enjoy"
+    && git clone https://github.com/longld/peda.git ~/tools/peda \
+    && echo -en "source ~/tools/peda/peda.py\n" >> ~/.gdbinit \
 
 # pwngdb
-RUN git clone https://github.com/scwuaptx/Pwngdb.git ~/.pwngdb \
-    && echo "sorce ~/.pwngdb/pwngdb.py" >> ~/.gdbinit \
-    && echo "sorce ~/.pwngdb/ngelheap/gdbinit.py" >> ~/.gdbinit 
-
-# angr, z3py
-RUN apt-fast install -y python-dev libffi-dev python-pip \
-    && apt-get clean \
-    && pip install angr
+    && git clone https://github.com/scwuaptx/Pwngdb.git ~/tools/pwngdb \
+    && echo -en "sorce ~/tools/pwngdb/pwngdb.py\n" >> ~/.gdbinit \
+    && echo -en "sorce ~/tools/pwngdb/ngelheap/gdbinit.py\n" >> ~/.gdbinit \
 
 # qira
-#RUN apt-get install -y sudo
-#RUN git clone https://github.com/geohot/qira.git ~/.qira \
-#    && cd ~/.qira \
-#    && ./install.sh \
-#    && ./fetchlibs.sh \
-#    && apt-fast clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && git clone https://github.com/geohot/qira.git ~/tools/qira \
+    && cd ~/tools/qira \
+    && ./install.sh \
+    && ./fetchlibs.sh \
+
+# capstone
+    && git clone https://github.com/aquynh/capstone ~/tools/capstone \
+    && cd ~/tools/capstone \
+    && ./make.sh \
+    && ./make.sh install \
+    && cd ~/tools/capstone/bindings/python \
+    && python3 setup.py install \
+    && python2 setup.py install \
+
+# keystone
+    && git clone https://github.com/keystone-engine/keystone.git ~/tools/keystone \
+    && cd ~/tools/keystone \
+    && mkdir build \
+    && cd build \
+    && ../make-share.sh \
+    && make install \
+    && ldconfig \
+    && cd ~/tools/keystone/bindings/python \
+    && make install \
+
+# ROPGadget
+    && git clone https://github.com/JonathanSalwan/ROPgadget ~/tools/ROPgadget \
+    && cd ~/tools/ROPgadget \
+    && python setup.py install \
+
+# Z3 Prover
+		&& git clone https://github.com/Z3Prover/z3.git ~/tools/z3 \
+    && cd ~/tools/z3 \
+    && python scripts/mk_make.py --python \
+    && cd build \
+    && make install \
 
 # afl
-RUN apt-fast install -y libtool-bin \
-    && apt-fast clean \
-    && wget http://lcamtuf.coredump.cx/afl/releases/afl-latest.tgz \
+    && wget --quiet http://lcamtuf.coredump.cx/afl/releases/afl-latest.tgz -O ~/tools/afl-latest.tgz \
+    && cd ~/tools \
     && tar xvf afl-latest.tgz \
     && cd afl-* && make \
-    && cd qemu_mode && ./build_qemu_support.sh
+    && cd qemu_mode && ./build_qemu_support.sh \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # dotfiles
 RUN touch ~/.bash_history \
@@ -75,4 +164,5 @@ RUN mkdir -p /etc/my_init.d
 COPY bin/banner.py /etc/my_init.d/banner.py
 RUN chmod +x /etc/my_init.d/banner.py
 
+EXPOSE 22 1337 3002 3003 4000
 CMD ["/bin/bash"]
