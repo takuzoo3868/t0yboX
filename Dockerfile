@@ -22,7 +22,7 @@ RUN add-apt-repository ppa:apt-fast/stable \
     && apt-fast install -y \
     binutils-multiarch \
     binwalk \
-    boost159 \
+    clang \
     cmake \
     coreutils \
     ctags \
@@ -34,6 +34,7 @@ RUN add-apt-repository ppa:apt-fast/stable \
     git \
     graphviz-dev \
     hydra \
+    libboost-all-dev \
     libc6-i386 \
     libc6-dev-i386 \
     libssl-dev \
@@ -42,6 +43,7 @@ RUN add-apt-repository ppa:apt-fast/stable \
     libffi-dev \
     libpcap-dev \
     libpcre++-dev \
+    libqt4-dev \
     libtool-bin \
     llvm \
     ltrace \
