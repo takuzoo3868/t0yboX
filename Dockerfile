@@ -150,12 +150,6 @@ RUN add-apt-repository ppa:apt-fast/stable \
     && cd qemu_mode && ./build_qemu_support.sh \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# dotfiles
-RUN touch ~/.bash_history \
-    && git clone https://github.com/takuzoo3868/dotfiles.git ~/.dotfiles \
-    && cd ~/.dotfiles \
-    && chmod +x setup_link.sh && ./setup_link.sh
-
 # init startup script
 RUN mkdir -p /etc/my_init.d
 COPY bin/banner.py /etc/my_init.d/banner.py
