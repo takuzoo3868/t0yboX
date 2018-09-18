@@ -91,7 +91,7 @@ RUN add-apt-repository ppa:apt-fast/stable \
     && mkdir -p ~/tools/rp \
     && wget --quiet https://github.com/0vercl0k/rp/releases/download/v1/rp-lin-x64 -O ~/tools/rp/rp-lin-x64 \
     && wget --quiet https://github.com/0vercl0k/rp/releases/download/v1/rp-lin-x86 -O ~/tools/rp/rp-lin-x86 \
-    && cd ~/tools/rp
+    && cd ~/tools/rp \
     && chmod +x rp-lin-x64 rp-lin-x86 \
     && mv rp-lin-x64 rp-lin-x86 /usr/local/bin \
 
