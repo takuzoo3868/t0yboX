@@ -87,20 +87,13 @@ RUN add-apt-repository ppa:apt-fast/stable \
     && rm -rf /tmp/* \
 
 # non package tools install
-    && mkdir -p ~/tools \
-
 # rp ++
-    && cd ~/tools \
-    && git clone https://github.com/0vercl0k/rp.git \
-    && cd rp \
-    && git checkout next \
-    && git submodule update --init --recursive \
-    && sed -i 's/find_package(Boost 1.59.0 COMPONENTS flyweight)/find_package(Boost)/g' CMakeLists.txt \
-    && mkdir build \
-    && cd build \
-    && cmake ../ \
-    && make \
-    && cp ../bin/rp-lin-x64 /usr/local/bin/ \
+    && mkdir -p ~/tools/rp
+    && wget --quiet https://github.com/0vercl0k/rp/releases/download/v1/rp-lin-x64 -O ~/tools/rp/rp-lin-x64 \
+    && wget --quiet https://github.com/0vercl0k/rp/releases/download/v1/rp-lin-x86 -O ~/tools/rp/rp-lin-x86 \
+    && cd ~/tools/rp
+    && chmod +x rp-lin-x64 rp-lin-x86 \
+    && mv rp-lin-x64 rp-lin-x86 /usr/local/bin \
 
 # peda
     && git clone https://github.com/longld/peda.git ~/tools/peda \
